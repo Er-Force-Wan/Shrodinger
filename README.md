@@ -1,2 +1,6 @@
 # Shrodinger
-Propagation of a wave packet according to Shrödinger equation.
+
+Code developped in colaboration with Lou-Anne Veyrat.
+
+Language : Python
+
