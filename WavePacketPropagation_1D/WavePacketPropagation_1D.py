@@ -31,6 +31,7 @@ def Param():
     
 def Phi(sigma, X, dx, xs, kx, n, L):
     "Function which return the real (PhiR) and imaginary (PhiI) part of the wavepacket at t=0"
+
     PhiR = np.exp(-((X-xs)**2 ) / ( 2. * sigma**2 ) ) * np.cos( kx * X )
     PhiI = np.exp(-((X-xs)**2 ) / ( 2. * sigma**2 ) ) * np.sin( kx * X )
     C = Normal(PhiR, PhiI, sigma, X, dx, xs, kx, n, L)
@@ -42,6 +43,7 @@ def Phi(sigma, X, dx, xs, kx, n, L):
 
 def Normal(PhiR, PhiI, sigma, X, dx, xs, kx, n, L):
     "Function which normalizes the gaussian"
+
     Prob = PhiR**2 + PhiI**2
     c = 0
     for i in range(len(X)):
@@ -51,12 +53,14 @@ def Normal(PhiR, PhiI, sigma, X, dx, xs, kx, n, L):
 
 def Phit(PhiR, PhiI, V,  dx, dt, n, hbar, m):
     "Function which calcuate the wave packet state from the time t to the time t+dt"
+
     PhiI[1:n-1] = PhiI[1:n-1] - dt * ( PhiR[1:n-1] * V[1:n-1] / hbar - hbar * (PhiR[2:n] - 2 * PhiR[1:n-1] + PhiR[0:n-2]) / ( 2 * m * dx**2 ))
     PhiR[1:n-1] = PhiR[1:n-1] + dt * ( PhiI[1:n-1] * V[1:n-1] / hbar - hbar * (PhiI[2:n] - 2 * PhiI[1:n-1] + PhiI[0:n-2]) / ( 2 * m * dx**2 ))
     return PhiI, PhiR
 
 def Pot_carre(E, n):
     "Function which define a potential to observe evanescent wave"
+
     V = [0]*n
     v = [0]*n
     z=int(n/2)
@@ -71,6 +75,7 @@ def Pot_carre(E, n):
 
 def Pot_tunnel(E, n):
     "Function which define a potential to observe quantum tunnelling"
+
     V = [0]*n
     v = [0]*n
     z=int(n/2)
@@ -83,26 +88,16 @@ def Pot_tunnel(E, n):
             v[i] = V[i] / E
     return V, v
 
-def Pot_period(E, n):
-    V = [0]*n
-    v = [0]*n
-    z=int(n/2)
-    for i in range(n):
-        if  z < i < z+15 or 11/10 * z < i < 11/10 * z+15 or  12/10 * z < i <  12/10 * z+15 or 13/10 * z < i <  13/10 * z+15:
-            V[i] = 250
-            v[i] = V[i] / E
-        else:
-            V[i] = 0
-            v[i] = V[i] / E
-    return V, v
-
 def Pot_nul(E, n):
+    "Function used if we want a free propagation of the wave packet inside the box"
+
     V = [0]*n
     v = [0]*n
     return V, v
-
 
 def Prob(PhiR, PhiI, V,  dx, dt, t, n, hbar, m):
+    "Function which calculate the densité of probability at each time t"
+
     ProbTot = [PhiR**2 + PhiI**2]
     for j in range(t):
         PhiI, PhiR = Phit(PhiR, PhiI, V, dx, dt, n, hbar, m)
@@ -111,7 +106,8 @@ def Prob(PhiR, PhiI, V,  dx, dt, t, n, hbar, m):
     
     
 def animat(Pot):
-    
+    "Function which returne the aniamtion of the propagation"
+
     L, dx, X, x, xs, kx, n, dt, hbar, m, sigma, t, tmax, E = Param()
     
     PhiR, PhiI = Phi(sigma, X, dx, xs, kx, n, L)
@@ -132,7 +128,6 @@ def animat(Pot):
         line.set_data([],[])
         return line,
     
-    
     def anim(i, ProbTot):
         ProbTot = ProbTot[i]
         line.set_data(X, ProbTot)
@@ -144,7 +139,8 @@ def animat(Pot):
     return ani
 
 def enreg_ani(Pot):
-    
+    "Function which allowed to save animation using FFmpeg software"
+
     animation.rcParams['animation.ffmpeg_path'] = r'C:\ffmpeg\bin\ffmpeg.exe'
     
     mywriter = animation.FFMpegFileWriter(fps=25,codec="libx264")
@@ -154,4 +150,4 @@ def enreg_ani(Pot):
     ani.save("Pot_carre_tmax=1.mp4", writer=mywriter)
     
     return ani
-    
+
