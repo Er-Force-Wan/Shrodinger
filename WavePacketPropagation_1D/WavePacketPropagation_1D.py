@@ -5,28 +5,32 @@ import matplotlib.animation as animation
 
 
 def Param():
+    "Fonction which define all parameters of the system"
+
+    L= 20. # Width of the box
+    dx = 0.01 # Space discetization step
+    n = int(L/dx) # Number of space step
+    X = np.linspace(0,L,n) # List which is the discretized box
+    x = X/L # List which is the X list normalized
     
-    L= 20.
-    dx = 0.01
-    n = int(L/dx)
-    X = np.linspace(0,L,n)
-    x = X/L
-    dt = 10**(-5)
+    tmax = 2. # Time of propagation
+    dt = 10**(-5) # Time discretization step
+    t = int( tmax / dt ) # Number of time step
     
-    tmax = 2.
-    t = int( tmax / dt )
+    hbar = 1. # Reduced Plack constante
+    m = 1. # Particle mass
+
+    xs = 5. # Postition of the center of the gaussian
+    kx = 20. # Particle momentum
+    sigma = 1. # Gaussian width
     
-    hbar = 1.
-    m = 1.
-    xs = 5.
-    kx = 20.
-    sigma = 1.
-    
-    E = hbar**2 * kx**2 / (2 * m)
+    E = hbar**2 * kx**2 / (2 * m) # Particle energy
+
     return L, dx, X, x, xs, kx, n, dt, hbar, m, sigma, t, tmax, E
 
     
 def Phi(sigma, X, dx, xs, kx, n, L):
+    "Function which return the real (PhiR) and imaginary (PhiI) part of the wavepacket at t=0"
     PhiR = np.exp(-((X-xs)**2 ) / ( 2. * sigma**2 ) ) * np.cos( kx * X )
     PhiI = np.exp(-((X-xs)**2 ) / ( 2. * sigma**2 ) ) * np.sin( kx * X )
     C = Normal(PhiR, PhiI, sigma, X, dx, xs, kx, n, L)
@@ -37,6 +41,7 @@ def Phi(sigma, X, dx, xs, kx, n, L):
 
 
 def Normal(PhiR, PhiI, sigma, X, dx, xs, kx, n, L):
+    "Function which normalizes the gaussian"
     Prob = PhiR**2 + PhiI**2
     c = 0
     for i in range(len(X)):
@@ -45,11 +50,13 @@ def Normal(PhiR, PhiI, sigma, X, dx, xs, kx, n, L):
     return C
 
 def Phit(PhiR, PhiI, V,  dx, dt, n, hbar, m):
+    "Function which calcuate the wave packet state from the time t to the time t+dt"
     PhiI[1:n-1] = PhiI[1:n-1] - dt * ( PhiR[1:n-1] * V[1:n-1] / hbar - hbar * (PhiR[2:n] - 2 * PhiR[1:n-1] + PhiR[0:n-2]) / ( 2 * m * dx**2 ))
     PhiR[1:n-1] = PhiR[1:n-1] + dt * ( PhiI[1:n-1] * V[1:n-1] / hbar - hbar * (PhiI[2:n] - 2 * PhiI[1:n-1] + PhiI[0:n-2]) / ( 2 * m * dx**2 ))
     return PhiI, PhiR
 
 def Pot_carre(E, n):
+    "Function which define a potential to observe evanescent wave"
     V = [0]*n
     v = [0]*n
     z=int(n/2)
@@ -63,6 +70,7 @@ def Pot_carre(E, n):
     return V, v
 
 def Pot_tunnel(E, n):
+    "Function which define a potential to observe quantum tunnelling"
     V = [0]*n
     v = [0]*n
     z=int(n/2)
