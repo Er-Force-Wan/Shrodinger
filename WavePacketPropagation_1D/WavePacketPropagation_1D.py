@@ -139,7 +139,7 @@ def animat(Pot):
     return ani
 
 def enreg_ani(Pot):
-    "Function which allowed to save animation using FFmpeg software"
+    "Function which allows to save animation using FFmpeg software"
 
     animation.rcParams['animation.ffmpeg_path'] = r'C:\ffmpeg\bin\ffmpeg.exe'
     
