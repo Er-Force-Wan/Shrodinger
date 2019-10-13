@@ -96,7 +96,7 @@ def Pot_nul(E, n):
     return V, v
 
 def Prob(PhiR, PhiI, V,  dx, dt, t, n, hbar, m):
-    "Function which calculate the densité of probability at each time t"
+    "Function which calculate the density of probability at each time t"
 
     ProbTot = [PhiR**2 + PhiI**2]
     for j in range(t):
@@ -106,7 +106,7 @@ def Prob(PhiR, PhiI, V,  dx, dt, t, n, hbar, m):
     
     
 def animat(Pot):
-    "Function which returne the aniamtion of the propagation"
+    "Function which return the aniamtion of the propagation"
 
     L, dx, X, x, xs, kx, n, dt, hbar, m, sigma, t, tmax, E = Param()
     
